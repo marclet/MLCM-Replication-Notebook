@@ -20,7 +20,7 @@ The explanations in this notebook are kept short. Please refer to the paper for 
 
 Click on the "Code" button on the top right of this notebook to "Hide All Code" and see only the results or "Download Rmd" to extract the underlying code.
 
-Be aware running the analyses in this notebook without reducing the number of bootstrap replications (currently "nboot = 1", as the standard errors in the paper are computed based on 1,000 replications) will take a long time. For quicker runs, we recommend lowering the number of replications.
+Be aware that running the analyses in this notebook with the original number of bootstrap replications (standard errors in the paper are computed based on 1,000 replications) will take a long time. For this reason, the code below has the options "nboot" set to 1. Change it to "nboot = 1000" if you also want to get the same standard error as in the paper.
 
 <br>
 <br>
