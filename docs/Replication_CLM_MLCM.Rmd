@@ -3,6 +3,7 @@ title: "Replication Notebook"
 output:
   html_document:
     df_print: paged
+  pdf_document: default
   html_notebook: default
 ---
 
@@ -49,8 +50,8 @@ We start by loading and preparing the data:
 # Download dataset from LINK
 # into your working directory and load the raw data 
 # Full dataset
-dataset_full <- read.csv(paste0(wd, "/Data/dataset_replication_full_FINAL.csv"), na.strings=c("",".","NA"))
-x.cate <- read.csv(paste0(wd, "/Data/CATE_dataset.csv"))
+#dataset_full <- read.csv(paste0(wd, "/Data/dataset_replication_full_FINAL.csv"), na.strings=c("",".","NA"))
+#x.cate <- read.csv(paste0(wd, "/Data/CATE_dataset.csv"))
 # Pre-intervention dataset
 dataset_pre_2020 <- subset(dataset_full, year<2020) 
 # Intervention date
