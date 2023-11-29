@@ -1,0 +1,387 @@
+% Options for packages loaded elsewhere
+\PassOptionsToPackage{unicode}{hyperref}
+\PassOptionsToPackage{hyphens}{url}
+%
+\documentclass[
+]{article}
+\usepackage{lmodern}
+\usepackage{amssymb,amsmath}
+\usepackage{ifxetex,ifluatex}
+\ifnum 0\ifxetex 1\fi\ifluatex 1\fi=0 % if pdftex
+  \usepackage[T1]{fontenc}
+  \usepackage[utf8]{inputenc}
+  \usepackage{textcomp} % provide euro and other symbols
+\else % if luatex or xetex
+  \usepackage{unicode-math}
+  \defaultfontfeatures{Scale=MatchLowercase}
+  \defaultfontfeatures[\rmfamily]{Ligatures=TeX,Scale=1}
+\fi
+% Use upquote if available, for straight quotes in verbatim environments
+\IfFileExists{upquote.sty}{\usepackage{upquote}}{}
+\IfFileExists{microtype.sty}{% use microtype if available
+  \usepackage[]{microtype}
+  \UseMicrotypeSet[protrusion]{basicmath} % disable protrusion for tt fonts
+}{}
+\makeatletter
+\@ifundefined{KOMAClassName}{% if non-KOMA class
+  \IfFileExists{parskip.sty}{%
+    \usepackage{parskip}
+  }{% else
+    \setlength{\parindent}{0pt}
+    \setlength{\parskip}{6pt plus 2pt minus 1pt}}
+}{% if KOMA class
+  \KOMAoptions{parskip=half}}
+\makeatother
+\usepackage{xcolor}
+\IfFileExists{xurl.sty}{\usepackage{xurl}}{} % add URL line breaks if available
+\IfFileExists{bookmark.sty}{\usepackage{bookmark}}{\usepackage{hyperref}}
+\hypersetup{
+  hidelinks,
+  pdfcreator={LaTeX via pandoc}}
+\urlstyle{same} % disable monospaced font for URLs
+\usepackage{longtable,booktabs}
+% Correct order of tables after \paragraph or \subparagraph
+\usepackage{etoolbox}
+\makeatletter
+\patchcmd\longtable{\par}{\if@noskipsec\mbox{}\fi\par}{}{}
+\makeatother
+% Allow footnotes in longtable head/foot
+\IfFileExists{footnotehyper.sty}{\usepackage{footnotehyper}}{\usepackage{footnote}}
+\makesavenoteenv{longtable}
+\setlength{\emergencystretch}{3em} % prevent overfull lines
+\providecommand{\tightlist}{%
+  \setlength{\itemsep}{0pt}\setlength{\parskip}{0pt}}
+\setcounter{secnumdepth}{-\maxdimen} % remove section numbering
+
+%%%% User defined commands
+\usepackage{pifont}
+\newcommand{\cmark}{\ding{51}}
+\newcommand{\done}{\rlap{$\square$}{\raisebox{2pt}{\large\hspace{1pt}\cmark}}}
+
+\author{}
+\date{}
+
+\begin{document}
+
+\hypertarget{template-readme-and-guidance}{%
+\section{README}}
+
+
+\hypertarget{overview}{%
+\subsection{Overview}\label{overview}}
+
+The code in this replication package allows to reproduce all the results reported in the paper ``Losing control (group)? The Machine Learning Control Method for counterfactual forecasting''. This folder contains the following subfolders: 
+
+\begin{itemize}
+\item Data: \texttt{.csv} files with the data to replicate the empirical analysis
+\item Functions: \texttt{.R} functions used for the analysis and for simulations
+\item Codes: \texttt{.R} files with the R codes to replicate the analysis (file ``code.R'') and simulations (``sim\_code.R'')
+\item Output: the exported tables in \texttt{.csv} format and figures in \texttt{.png} format resulting from executing ``code.R'' and ``sim\_code.R''. [TO DO]
+\end{itemize}
+
+The paper introduces a novel methodology to estimate causal effects on panel data (i.e., multiple units observed in time) in the presence of an intervention/policy introduction by contrasting the observed outcome post-intervention with a predicted counterfactual based on a data-driven Machine Learning approach. The methodology is tested in a simulation study and then used to evaluate the causal effect of [COVID on Invalsi -- CHANGE THIS, SAY BETTER].
+
+
+\hypertarget{data-availability-and-provenance-statements}{%
+\subsection{Data Availability and Provenance Statements}\label{data-availability-and-provenance-statements}}
+
+The data used for the empirical analysis have been obtained upon request made to the data provider (i.e., the chief marketing officer of the supermarket chain). The data provider granted permission to share the data for scientific purposes in an anonymized fashion (i.e., without reference to the product). Under this agreement, the authors have made the data publicly available in the supplementary material of the manuscript (see the ``Summary of Availability'' statement below).
+
+
+\hypertarget{statement-about-rights}{%
+\subsubsection{Statement about Rights}\label{statement-about-rights}}
+
+\begin{itemize}
+\tightlist
+\item[\done]
+  I certify that the author(s) of the manuscript have legitimate access
+  to and permission to use the data used in this manuscript.
+\item[\done]
+  I certify that the author(s) of the manuscript have documented
+  permission to redistribute/publish the data contained within this
+  replication package. 
+\end{itemize}
+
+\hypertarget{summary-of-availability}{%
+\subsubsection{Summary of Availability}\label{summary-of-availability}}
+
+The data for this project are confidential and the data provider wish to remain anonymous. However, upon permission granted by the data provider (see the ``Statement about Rights'' above) the authors of the manuscript deposited the data at Oxford University Press in the supplementary material of the paper. The authors therefore confirm that all the data are now publicly available and can be used for replication purposes. 
+
+\begin{itemize}
+\tightlist
+\item[\done]
+  All data \textbf{are} publicly available.
+%\item[$\square$]
+%  Some data \textbf{cannot be made} publicly available.
+%\item[$\square$]
+%  \textbf{No data can be made} publicly available.
+\end{itemize}
+
+\hypertarget{dataset-list}{%
+\subsection{Dataset list}\label{dataset-list}}
+
+The ``Data'' folder contains the following files:
+
+\begin{itemize}
+\item \texttt{dates.csv}: vector of dates, from September 1, 2017 to April 30, 2019.
+\item \texttt{dummies.csv}: pre-generated dummies for Italian holidays and day-of-the-week effects
+\item \texttt{prices.csv}: daily prices of all goods included in the analysis
+\item \texttt{sales.csv}: daily number of units sold of each product
+\end{itemize}
+
+\hypertarget{program-list}{%
+\subsection{Description of programs}\label{program-list}}
+
+The ``Functions'' folder contains the following files:
+
+\begin{itemize}
+\item \texttt{Setup.R}: function and code to set up the environment
+\item \texttt{Functions.R}: main functions for estimating the causal effect
+\item \texttt{Plot\_Functions.R}: plotting functions
+\item \texttt{Sim\_Functions.R}: functions used in the simulation study
+
+\end{itemize}
+
+Further details about the input/output of each documented function are reported in the \texttt{.R} files.
+
+\hypertarget{instructions-empirical}{%
+\subsection{Replication Instructions}\label{instructions}}
+
+Open the file ``code.R'', update your directory and execute the code. The code runs independently. For the simulation study, open the file ``sim\_code.R'', update your directory and execute the code. The code runs independently. The latest version of R can be download from \texttt{https://www.r-project.org}. All the outputs (tables in \texttt{.csv} format and figures in \texttt{.png} format) are automatically exported and saved in the ``Output'' folder. For a complete list of the exported tables and figures see the section ``List of tables and programs'' below. 
+
+\hypertarget{computational-requirements}{%
+\subsection{Computational requirements}\label{computational-requirements}}
+List of R packages that are needed in order to replicate the results:
+\begin{itemize}
+\tightlist
+
+\item
+  R 4.2.1
+
+  \begin{itemize}
+  \tightlist
+  \item
+    \texttt{tseries} (0.10.50)
+  \item
+    \texttt{forecast} (8.16)
+  \item 
+    \texttt{ggplot2} (3.3.5)
+  \item 
+    \texttt{pracma} (2.3.8)
+  \item 
+    \texttt{ltsa} (1.4.6)
+  \item 
+    \texttt{stats} (4.2.1)
+  \item
+    \texttt{gridExtra} (2.3)
+  \item
+    \texttt{parallel} (4.2.1)           
+  \item
+    the file ``\texttt{Setup.R}'' will install all dependencies
+    (latest version). If, for any reason, ``\texttt{Setup.R}'' fails to install some or all the required packages, package installation should be done manually by executing the following line of code \texttt{install.packages(''package name'')} in the R console . 
+  \end{itemize}
+\end{itemize}
+
+The results presented in the paper have been obtained under R version 4.2.1 on Windows 10 Home 21H1 Intel(R) Core(TM) i7-8550U CPU \@ 1.80GHz   1.99 GHz. The approximate time needed to reproduce the analyses on a standard (2022) laptop machine is 10 mins. 
+As for the simulation study, we experienced approximately 9 hours on our machine by employing code parallelization on 7 logical cores. If your machine uses less than 7 cores, computational time may be considerably higher. To reduce the computational time of simulations, we also used a server platform running under Ubuntu 22.04 LTS. The simulations' results reported in the paper and in the online supplement have been obtained on this platform under R version 4.2.1. 
+
+\hypertarget{list-of-tables-and-programs}{%
+\subsection{List of tables and
+programs}\label{list-of-tables-and-programs}}
+The provided codes reproduce selected figures and tables in the main paper and in the supplement. For each of them, we specify below the line of the program that generates them and the name of the corresponding file in the ``Output'' folder. Notice that all the tables are exported and saved in \texttt{.csv} format and, as such, they can be opened on many applications (e.g., Microsoft Excel, OpenOffice Calc, Notepad, Google Sheet). 
+
+The figures and tables reported in the main paper are reproduced as follows.
+
+\begin{longtable}[]{@{}lllll@{}}
+\toprule
+\begin{minipage}[b]{0.13\columnwidth}\raggedright
+Figure/Table \#\strut
+\end{minipage} & \begin{minipage}[b]{0.18\columnwidth}\raggedright
+Program\strut
+\end{minipage} & \begin{minipage}[b]{0.09\columnwidth}\raggedright
+Line Number\strut
+\end{minipage} & \begin{minipage}[b]{0.23\columnwidth}\raggedright
+Output file\strut
+\end{minipage} & \begin{minipage}[b]{0.23\columnwidth}\raggedright
+Note\strut
+\end{minipage}\tabularnewline
+\midrule
+\endhead
+\begin{minipage}[t]{0.13\columnwidth}\raggedright
+Table 1\strut
+\end{minipage} & \begin{minipage}[t]{0.18\columnwidth}\raggedright
+sim\_code.R\strut
+\end{minipage} & \begin{minipage}[t]{0.09\columnwidth}\raggedright
+215 \strut
+\end{minipage} & \begin{minipage}[t]{0.23\columnwidth}\raggedright
+table1.csv\strut
+\end{minipage} & \begin{minipage}[t]{0.23\columnwidth}\raggedright
+Same as Table 2 in the supplement\strut
+\end{minipage}\tabularnewline
+\begin{minipage}[t]{0.13\columnwidth}\raggedright
+Table 2\strut
+\end{minipage} & \begin{minipage}[t]{0.18\columnwidth}\raggedright
+code.R\strut
+\end{minipage} & \begin{minipage}[t]{0.09\columnwidth}\raggedright
+137\strut
+\end{minipage} & \begin{minipage}[t]{0.23\columnwidth}\raggedright
+table2.csv\strut
+\end{minipage} & \begin{minipage}[t]{0.23\columnwidth}\raggedright
+\strut
+\end{minipage}\tabularnewline
+\begin{minipage}[t]{0.13\columnwidth}\raggedright
+Table 3\strut
+\end{minipage} & \begin{minipage}[t]{0.18\columnwidth}\raggedright
+code.R\strut
+\end{minipage} & \begin{minipage}[t]{0.09\columnwidth}\raggedright
+138\strut
+\end{minipage} & \begin{minipage}[t]{0.23\columnwidth}\raggedright
+table3.csv\strut
+\end{minipage} & \begin{minipage}[t]{0.23\columnwidth}\raggedright
+\strut
+\end{minipage}\tabularnewline
+\begin{minipage}[t]{0.13\columnwidth}\raggedright
+Figure 1\strut
+\end{minipage} & \begin{minipage}[t]{0.18\columnwidth}\raggedright
+sim\_code.R\strut
+\end{minipage} & \begin{minipage}[t]{0.09\columnwidth}\raggedright
+149\strut
+\end{minipage} & \begin{minipage}[t]{0.23\columnwidth}\raggedright
+figure1.png\strut
+\end{minipage} & \begin{minipage}[t]{0.23\columnwidth}\raggedright
+Same as Figure 2 in the supplement\strut
+\end{minipage}\tabularnewline
+\begin{minipage}[t]{0.13\columnwidth}\raggedright
+Figure 3\strut
+\end{minipage} & \begin{minipage}[t]{0.18\columnwidth}\raggedright
+code.R\strut
+\end{minipage} & \begin{minipage}[t]{0.09\columnwidth}\raggedright
+120\strut
+\end{minipage} & \begin{minipage}[t]{0.23\columnwidth}\raggedright
+figure3.png\strut
+\end{minipage} & \begin{minipage}[t]{0.23\columnwidth}\raggedright
+\strut
+\end{minipage}\tabularnewline
+\begin{minipage}[t]{0.13\columnwidth}\raggedright
+Figure 4\strut
+\end{minipage} & \begin{minipage}[t]{0.18\columnwidth}\raggedright
+code.R\strut
+\end{minipage} & \begin{minipage}[t]{0.09\columnwidth}\raggedright
+125\strut
+\end{minipage} & \begin{minipage}[t]{0.23\columnwidth}\raggedright
+figure4.png\strut
+\end{minipage} & \begin{minipage}[t]{0.23\columnwidth}\raggedright
+\strut
+\end{minipage}\tabularnewline
+\bottomrule
+\end{longtable}
+
+
+The figures and tables reported in the online supplement are reproduced as follows. 
+
+\begin{longtable}[]{@{}lllll@{}}
+\toprule
+\begin{minipage}[b]{0.13\columnwidth}\raggedright
+Figure/Table \#\strut
+\end{minipage} & \begin{minipage}[b]{0.18\columnwidth}\raggedright
+Program\strut
+\end{minipage} & \begin{minipage}[b]{0.09\columnwidth}\raggedright
+Line Number\strut
+\end{minipage} & \begin{minipage}[b]{0.23\columnwidth}\raggedright
+Output file\strut
+\end{minipage} & \begin{minipage}[b]{0.23\columnwidth}\raggedright
+Note\strut
+\end{minipage}\tabularnewline
+\midrule
+\endhead
+\begin{minipage}[t]{0.13\columnwidth}\raggedright
+Table 1 S\strut
+\end{minipage} & \begin{minipage}[t]{0.18\columnwidth}\raggedright
+sim\_code.R\strut
+\end{minipage} & \begin{minipage}[t]{0.09\columnwidth}\raggedright
+212 \strut
+\end{minipage} & \begin{minipage}[t]{0.23\columnwidth}\raggedright
+table1S.csv\strut
+\end{minipage} & \begin{minipage}[t]{0.23\columnwidth}\raggedright
+\strut
+\end{minipage}\tabularnewline
+\begin{minipage}[t]{0.13\columnwidth}\raggedright
+Table 4 S\strut
+\end{minipage} & \begin{minipage}[t]{0.18\columnwidth}\raggedright
+sim\_code.R\strut
+\end{minipage} & \begin{minipage}[t]{0.09\columnwidth}\raggedright
+218\strut
+\end{minipage} & \begin{minipage}[t]{0.23\columnwidth}\raggedright
+table4S.csv\strut
+\end{minipage} & \begin{minipage}[t]{0.23\columnwidth}\raggedright
+\strut
+\end{minipage}\tabularnewline
+\begin{minipage}[t]{0.13\columnwidth}\raggedright
+Table 5 S\strut
+\end{minipage} & \begin{minipage}[t]{0.18\columnwidth}\raggedright
+sim\_code.R\strut
+\end{minipage} & \begin{minipage}[t]{0.09\columnwidth}\raggedright
+221\strut
+\end{minipage} & \begin{minipage}[t]{0.23\columnwidth}\raggedright
+table5S.csv\strut
+\end{minipage} & \begin{minipage}[t]{0.23\columnwidth}\raggedright
+\strut
+\end{minipage}\tabularnewline
+\begin{minipage}[t]{0.13\columnwidth}\raggedright
+Table 6 S\strut
+\end{minipage} & \begin{minipage}[t]{0.18\columnwidth}\raggedright
+code.R\strut
+\end{minipage} & \begin{minipage}[t]{0.09\columnwidth}\raggedright
+140\strut
+\end{minipage} & \begin{minipage}[t]{0.23\columnwidth}\raggedright
+table6S.csv\strut
+\end{minipage} & \begin{minipage}[t]{0.23\columnwidth}\raggedright
+\strut
+\end{minipage}\tabularnewline
+\begin{minipage}[t]{0.13\columnwidth}\raggedright
+Table 8 S\strut
+\end{minipage} & \begin{minipage}[t]{0.18\columnwidth}\raggedright
+code.R\strut
+\end{minipage} & \begin{minipage}[t]{0.09\columnwidth}\raggedright
+140\strut
+\end{minipage} & \begin{minipage}[t]{0.23\columnwidth}\raggedright
+table8S.csv\strut
+\end{minipage} & \begin{minipage}[t]{0.23\columnwidth}\raggedright
+\strut
+\end{minipage}\tabularnewline
+\begin{minipage}[t]{0.13\columnwidth}\raggedright
+Figure 1 S\strut
+\end{minipage} & \begin{minipage}[t]{0.18\columnwidth}\raggedright
+sim\_code.R\strut
+\end{minipage} & \begin{minipage}[t]{0.09\columnwidth}\raggedright
+179\strut
+\end{minipage} & \begin{minipage}[t]{0.23\columnwidth}\raggedright
+figure1S.png\strut
+\end{minipage} & \begin{minipage}[t]{0.23\columnwidth}\raggedright
+ \strut
+\end{minipage}\tabularnewline
+\begin{minipage}[t]{0.13\columnwidth}\raggedright
+Figure 3 S\strut
+\end{minipage} & \begin{minipage}[t]{0.18\columnwidth}\raggedright
+sim\_code.R\strut
+\end{minipage} & \begin{minipage}[t]{0.09\columnwidth}\raggedright
+189\strut
+\end{minipage} & \begin{minipage}[t]{0.23\columnwidth}\raggedright
+figure3S.png\strut
+\end{minipage} & \begin{minipage}[t]{0.23\columnwidth}\raggedright
+\strut
+\end{minipage}\tabularnewline
+\bottomrule
+\end{longtable}
+
+Please note that Tables 1S, 4S, 5S in the supplement and Table 1 in the main paper reproduce simulation results under different scenarios, namely, fictional interventions yielding to an increase or a decrease in the outcome level. Among them, we tested a scenario where the outcome level increases by 100\%; since the results obtained are not particularly meaningful, they are not reported in the manuscript but they are reproduced here (see the last row of the aforementioned tables); this is done for transparency reasons and for the benefit of the interested readers. 
+
+%The code is licensed under a MIT/BSD/GPL {[}choose one!{]} license. See \href{https://social-science-data-editors.github.io/template_README/LICENSE.txt}{LICENSE.txt} for details.
+
+\hypertarget{references}{%
+\subsection{References}\label{references}}
+
+%Menchetti, F., F. Cipollini, and F. Mealli F. (2022). ``Combining counterfactual outcomes and ARIMA models for policy evaluation'' Econometrics Journal. [VOLUME? NUMBER? PAGES?].
+
+Anonymous firm. (2019). ``Daily sales data of selected brands for the period September 2017-April 2019'' Unpublished data. Accessed April 30, 2019.
+\end{document}
