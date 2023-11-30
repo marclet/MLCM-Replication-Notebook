@@ -2,7 +2,6 @@
 title: "MLCM Replication Notebook"
 output:
   html_document: 
-    toc: yes
   html_notebook: default
 ---
 
@@ -21,14 +20,12 @@ The notebook should help to show the underlying code for researchers interested 
 
 The explanations in this notebook are kept short. Please refer to the paper for the full details regarding the application.
 
-Click on the "Code" button on the top right of this notebook and then click on "Download Rmd" to extract the underlying code.
-
-Be aware that running the analyses in this notebook with the original number of bootstrap replications (standard errors in the paper are computed based on 1,000 replications) will take a long time. For this reason, the code below has the option "nboot" set to 50 in all instances. Change it to "nboot = 1" if you also want to get the same standard errors as in the paper.
+Be aware that running the analyses in this notebook with the original number of bootstrap replications (standard errors in the paper are computed based on 1,000 replications) will take a long time. For this reason, the code below has the option "nboot" set to 50 in all instances. Change it to "nboot = 50000" if you also want to get the same standard errors as in the paper.
 
 
 ## Data preparation
 
-Download the main data from [here](https://github.com/marclet/MLCM-Replication-Notebook/tree/main/data).
+Download the data from [here](https://github.com/marclet/MLCM-Replication-Notebook/tree/main/data).
 
 ```{r message = FALSE, warning = FALSE}
 rm(list=ls())
@@ -149,7 +146,7 @@ data <- as.PanelMLCM(y = dataset_full[, "std_math_score"],
 
 ### 3.2. Causal effect estimation
 causal_effects <- MLCM(data = data, int_date = int_date, inf_type = "block", PCV = best,
-                       nboot = 1, CATE = TRUE, x.cate = x.cate)
+                       nboot = 50, CATE = TRUE, x.cate = x.cate)
 
 # ATE
 ate_eff <- c(causal_effects$ate, causal_effects$conf.ate)
@@ -190,7 +187,7 @@ data_placebo_2019 <- as.PanelMLCM(y = dataset_full_2019[, "std_math_score"],
                                   x = dataset_full_2019[, xvar], y.lag = 0) 
 
 effects_placebo_2019 <- MLCM(data = data_placebo_2019, int_date = int_date_2019, inf_type = "block", PCV = best,
-                             nboot = 1, CATE = FALSE)
+                             nboot = 50, CATE = FALSE)
 
 # ATE (Placebo 2019)
 ate_eff_placebo_2019 <- c(effects_placebo_2019$ate, effects_placebo_2019$conf.ate)
@@ -216,7 +213,7 @@ data_placebo_2018 <- as.PanelMLCM(y = dataset_full_2018[, "std_math_score"],
                                   x = dataset_full_2018[, xvar], y.lag = 0) 
 
 effects_placebo_2018 <- MLCM(data = data_placebo_2018, int_date = int_date_2018, inf_type = "block", PCV = best,
-                             nboot = 1, CATE = FALSE)
+                             nboot = 50, CATE = FALSE)
 
 # ATE (Placebo 2018)
 ate_eff_placebo_2018 <- c(effects_placebo_2018$ate, effects_placebo_2018$conf.ate)

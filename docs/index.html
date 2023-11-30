@@ -352,24 +352,6 @@ display: none;
 
 </div>
 
-<div id="TOC">
-<ul>
-<li><a href="#the-machine-learning-control-method-for-counterfactual-forecasting" id="toc-the-machine-learning-control-method-for-counterfactual-forecasting">“The
-Machine Learning Control Method for Counterfactual Forecasting”</a></li>
-<li><a href="#augusto-cerqua-marco-letta-fiammetta-menchetti" id="toc-augusto-cerqua-marco-letta-fiammetta-menchetti">Augusto Cerqua,
-Marco Letta, Fiammetta Menchetti</a></li>
-<li><a href="#the-impact-of-the-covid-19-crisis-on-education-in-italy" id="toc-the-impact-of-the-covid-19-crisis-on-education-in-italy">The
-impact of the COVID-19 crisis on education in Italy</a></li>
-<li><a href="#data-preparation" id="toc-data-preparation">Data
-preparation</a></li>
-<li><a href="#panel-cross-validation" id="toc-panel-cross-validation">Panel cross-validation</a>
-<ul>
-<li><a href="#estimation-of-causal-effects" id="toc-estimation-of-causal-effects">Estimation of causal
-effects</a></li>
-<li><a href="#placebo-test" id="toc-placebo-test">Placebo test</a></li>
-</ul></li>
-</ul>
-</div>
 
 <div id="the-machine-learning-control-method-for-counterfactual-forecasting" class="section level2">
 <h2>“The Machine Learning Control Method for Counterfactual
@@ -395,18 +377,16 @@ interested in replicating our analysis or in adapting it to new datasets
 for their own applications.</p>
 <p>The explanations in this notebook are kept short. Please refer to the
 paper for the full details regarding the application.</p>
-<p>Click on the “Code” button on the top right of this notebook and then
-click on “Download Rmd” to extract the underlying code.</p>
 <p>Be aware that running the analyses in this notebook with the original
 number of bootstrap replications (standard errors in the paper are
 computed based on 1,000 replications) will take a long time. For this
 reason, the code below has the option “nboot” set to 50 in all
-instances. Change it to “nboot = 1” if you also want to get the same
+instances. Change it to “nboot = 50000” if you also want to get the same
 standard errors as in the paper.</p>
 </div>
 <div id="data-preparation" class="section level2">
 <h2>Data preparation</h2>
-<p>Download the main data from <a href="https://github.com/marclet/MLCM-Replication-Notebook/tree/main/data">here</a>.</p>
+<p>Download the data from <a href="https://github.com/marclet/MLCM-Replication-Notebook/tree/main/data">here</a>.</p>
 <pre class="r"><code>rm(list=ls())
 # Load required libraries
 library(CAST)
@@ -797,14 +777,14 @@ data &lt;- as.PanelMLCM(y = dataset_full[, &quot;std_math_score&quot;],
 
 ### 3.2. Causal effect estimation
 causal_effects &lt;- MLCM(data = data, int_date = int_date, inf_type = &quot;block&quot;, PCV = best,
-                       nboot = 1, CATE = TRUE, x.cate = x.cate)
+                       nboot = 50, CATE = TRUE, x.cate = x.cate)
 
 # ATE
 ate_eff &lt;- c(causal_effects$ate, causal_effects$conf.ate)
 names(ate_eff) &lt;- c(&quot;ATE&quot;, &quot;Lower_bound&quot;, &quot;Upper_bound&quot;)
 ate_eff</code></pre>
 <pre><code>##         ATE Lower_bound Upper_bound 
-##  -0.7301459  -0.8076023  -0.8076023</code></pre>
+##  -0.7301459  -0.7977792  -0.6456996</code></pre>
 <pre class="r"><code># Individual effects
 ind_eff &lt;- data.frame(causal_effects$ind.effects)
 names(ind_eff) &lt;- c(&quot;ID&quot;, &quot;IND_EFF&quot;)
@@ -812,21 +792,21 @@ names(ind_eff) &lt;- c(&quot;ID&quot;, &quot;IND_EFF&quot;)
 cate_eff &lt;- causal_effects$cate.inf
 cate_eff</code></pre>
 <pre><code>## $`2020`
-##                     Node_22    Node_23    Node_21    Node_12    Node_14
-## cate             -0.6144688 -0.8260325 -0.6744567 -0.5946943 -0.5981913
-## var.cate                 NA         NA         NA         NA         NA
-## cate.lower.2.5%  -0.6050007 -0.8637722 -0.7768795 -0.5226194 -0.6145119
-## cate.upper.97.5% -0.6050007 -0.8637722 -0.7768795 -0.5226194 -0.6145119
-##                     Node_15   Node_16   Node_18     Node_8     Node_7
-## cate             -0.6941134 -1.206468 -1.265911 -0.6701214 -0.6671731
-## var.cate                 NA        NA        NA         NA         NA
-## cate.lower.2.5%  -0.8096817 -1.136842 -1.133018 -0.6884269 -0.8640222
-## cate.upper.97.5% -0.8096817 -1.136842 -1.133018 -0.6884269 -0.8640222
-##                      Node_6     Node_4
-## cate             -0.7973730 -0.4437906
-## var.cate                 NA         NA
-## cate.lower.2.5%  -0.9119922 -0.3330045
-## cate.upper.97.5% -0.9119922 -0.3330045</code></pre>
+##                      Node_22     Node_23     Node_21      Node_12    Node_14
+## cate             -0.61446882 -0.82603248 -0.67445674 -0.594694297 -0.5981913
+## var.cate          0.01001946  0.01646012  0.02060525  0.007485235  0.0093513
+## cate.lower.2.5%  -0.79613728 -1.09342346 -0.95191616 -0.810966135 -0.7442711
+## cate.upper.97.5% -0.42623457 -0.63369039 -0.41811620 -0.453863517 -0.4415490
+##                      Node_15     Node_16     Node_18       Node_8       Node_7
+## cate             -0.69411344 -1.20646826 -1.26591083 -0.670121352 -0.667173050
+## var.cate          0.01258319  0.05338241  0.03161032  0.003492359  0.007158273
+## cate.lower.2.5%  -0.88443588 -1.63112904 -1.55739711 -0.771925910 -0.752076028
+## cate.upper.97.5% -0.48943917 -0.88293164 -0.96284380 -0.575888545 -0.448911313
+##                       Node_6       Node_4
+## cate             -0.79737296 -0.443790646
+## var.cate          0.01177984  0.005586704
+## cate.lower.2.5%  -0.93919139 -0.631058605
+## cate.upper.97.5% -0.53698878 -0.316065381</code></pre>
 <pre class="r"><code>causal_effects$cate</code></pre>
 <pre><code>## [[1]]
 ## n= 579 
@@ -882,14 +862,14 @@ data_placebo_2019 &lt;- as.PanelMLCM(y = dataset_full_2019[, &quot;std_math_scor
                                   x = dataset_full_2019[, xvar], y.lag = 0) 
 
 effects_placebo_2019 &lt;- MLCM(data = data_placebo_2019, int_date = int_date_2019, inf_type = &quot;block&quot;, PCV = best,
-                             nboot = 1, CATE = FALSE)
+                             nboot = 50, CATE = FALSE)
 
 # ATE (Placebo 2019)
 ate_eff_placebo_2019 &lt;- c(effects_placebo_2019$ate, effects_placebo_2019$conf.ate)
 names(ate_eff_placebo_2019) &lt;- c(&quot;ATE&quot;, &quot;Lower_bound&quot;, &quot;Upper_bound&quot;)
 ate_eff_placebo_2019</code></pre>
 <pre><code>##         ATE Lower_bound Upper_bound 
-##  0.08729166  0.07553466  0.07553466</code></pre>
+##  0.08729166  0.02485315  0.16631692</code></pre>
 <pre class="r"><code># Individual effects (Placebo 2019)
 ind_eff_placebo_2019 &lt;- data.frame(effects_placebo_2019$ind.effects)
 names(ind_eff_placebo_2019) &lt;- c(&quot;ID&quot;, &quot;IND_EFF&quot;)
@@ -910,14 +890,14 @@ data_placebo_2018 &lt;- as.PanelMLCM(y = dataset_full_2018[, &quot;std_math_scor
                                   x = dataset_full_2018[, xvar], y.lag = 0) 
 
 effects_placebo_2018 &lt;- MLCM(data = data_placebo_2018, int_date = int_date_2018, inf_type = &quot;block&quot;, PCV = best,
-                             nboot = 1, CATE = FALSE)
+                             nboot = 50, CATE = FALSE)
 
 # ATE (Placebo 2018)
 ate_eff_placebo_2018 &lt;- c(effects_placebo_2018$ate, effects_placebo_2018$conf.ate)
 names(ate_eff_placebo_2018) &lt;- c(&quot;ATE&quot;, &quot;Lower_bound&quot;, &quot;Upper_bound&quot;)
 ate_eff_placebo_2018</code></pre>
 <pre><code>##         ATE Lower_bound Upper_bound 
-##  0.09544862 -0.01486660 -0.01486660</code></pre>
+##  0.09544862 -0.22908427  0.36132514</code></pre>
 <pre class="r"><code># Individual effects (Placebo 2018)
 ind_eff_placebo_2018 &lt;- data.frame(effects_placebo_2018$ind.effects)
 names(ind_eff_placebo_2018) &lt;- c(&quot;ID&quot;, &quot;IND_EFF&quot;)
