@@ -381,7 +381,7 @@ paper for the full details regarding the application.</p>
 number of bootstrap replications (standard errors in the paper are
 computed based on 1,000 replications) will take a long time. For this
 reason, the code below has the option “nboot” set to 50 in all
-instances. Change it to “nboot = 50000” if you also want to get the same
+instances. Change it to “nboot = 1000” if you also want to get the same
 standard errors as in the paper.</p>
 </div>
 <div id="data-preparation" class="section level2">
@@ -847,8 +847,8 @@ write.csv(cate_eff, file = paste0(wd, &quot;/Output/cate.csv&quot;))</code></pre
 <h2>Placebo test</h2>
 <p>Finally, we repeat the analysis on the pre-pandemic years (2018 and
 2019) to compute placebo treatment effects and export them to produce
-Panel B of Table III, Figure 2, and Figure I reported in Online Appendix
-Part 3.</p>
+Panel B of Table III, Figure 2, and Figure 1 reported in Online
+Appendix, Part 3.</p>
 <pre class="r"><code># Set seed
 set.seed(1)
 

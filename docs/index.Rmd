@@ -20,7 +20,7 @@ The notebook should help to show the underlying code for researchers interested 
 
 The explanations in this notebook are kept short. Please refer to the paper for the full details regarding the application.
 
-Be aware that running the analyses in this notebook with the original number of bootstrap replications (standard errors in the paper are computed based on 1,000 replications) will take a long time. For this reason, the code below has the option "nboot" set to 50 in all instances. Change it to "nboot = 50000" if you also want to get the same standard errors as in the paper.
+Be aware that running the analyses in this notebook with the original number of bootstrap replications (standard errors in the paper are computed based on 1,000 replications) will take a long time. For this reason, the code below has the option "nboot" set to 50 in all instances. Change it to "nboot = 1000" if you also want to get the same standard errors as in the paper.
 
 
 ## Data preparation
@@ -171,7 +171,7 @@ write.csv(cate_eff, file = paste0(wd, "/Output/cate.csv"))
 
 ## Placebo test
 
-Finally, we repeat the analysis on the pre-pandemic years (2018 and 2019) to compute placebo treatment effects and export them to produce Panel B of Table III, Figure 2, and Figure I reported in Online Appendix Part 3.
+Finally, we repeat the analysis on the pre-pandemic years (2018 and 2019) to compute placebo treatment effects and export them to produce Panel B of Table III, Figure 2, and Figure 1 reported in Online Appendix, Part 3.
 
 ```{r}
 # Set seed
