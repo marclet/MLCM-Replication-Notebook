@@ -1,8 +1,8 @@
 ---
 title: "MLCM Replication Notebook"
 output:
-  html_document:
-    df_print: paged
+  html_document: 
+    toc: yes
   html_notebook: default
 ---
 
@@ -10,9 +10,10 @@ output:
 
 ## Augusto Cerqua, Marco Letta, Fiammetta Menchetti
 
-## The Impact of the COVID-19 Crisis on Education in Italy
 
-This Notebook replicates the key results of the empirical application reported in Section 4 of the paper "The Machine Learning Control Method for Counterfactual Forecasting" (Cerqua et al., 2023) using the publicly available data that can be downloaded [here](https://github.com/marclet/MLCM-Replication-Notebook/tree/main/data). 
+## The impact of the COVID-19 crisis on education in Italy
+
+This Notebook replicates the key results of the empirical application reported in Section 4 of the paper "The Machine Learning Control Method for Counterfactual Forecasting" (Cerqua et al., 2023) using the data that can be downloaded [here](https://github.com/marclet/MLCM-Replication-Notebook/tree/main/data). 
 
 Note that, for the sake of computational speed, the main dataset ("dataset_replication_full_FINAL.csv") only includes the restricted set of relevant variables selected by the preliminary random forest (see Cerqua et al., 2023 for details). In the same folder, you can find the file "metadata_replication.xlsx", which contains detailed metadata regarding the variables included in both datasets. 
 
@@ -22,10 +23,8 @@ The explanations in this notebook are kept short. Please refer to the paper for 
 
 Click on the "Code" button on the top right of this notebook and then click on "Download Rmd" to extract the underlying code.
 
-Be aware that running the analyses in this notebook with the original number of bootstrap replications (standard errors in the paper are computed based on 1,000 replications) will take a long time. For this reason, the code below has the option "nboot" set to 50 in all instances. Change it to "nboot = 1000" if you also want to get the same standard errors as in the paper.
+Be aware that running the analyses in this notebook with the original number of bootstrap replications (standard errors in the paper are computed based on 1,000 replications) will take a long time. For this reason, the code below has the option "nboot" set to 50 in all instances. Change it to "nboot = 1" if you also want to get the same standard errors as in the paper.
 
-<br>
-<br>
 
 ## Data preparation
 
@@ -43,19 +42,22 @@ library(stats)
 library(utils)
 library(randomForest)
 library(rpart)
-library(MachineControl)
 ```
+<br>
+<br>
 
 We start by loading and preparing the data:
 
 ```{r}
-# Download dataset from https://github.com/marclet/MLCM-Replication-Notebook/tree/main/data into your working directory and load the raw data 
-# Full dataset
-wd <- "C:\\Users\\39380\\Documents\\GitHub\\MLCM-Replication-Notebook\\docs\\"
+# set the path where the data are stored for replication; custom functions
+wd <- "C:/Users/39380/Documents/GitHub/MLCM-Replication-Notebook/docs"
 source(paste0(wd, "/Functions/package.R"))
 setwd(wd)
-dataset_full <- read.csv(paste0(wd, "/data/dataset_replication_full_FINAL.csv"), na.strings=c("",".","NA"))
-x.cate <- read.csv(paste0(wd, "/data/CATE_dataset.csv"))
+
+# Download dataset from https://github.com/marclet/MLCM-Replication-Notebook/tree/main/data into your working directory and load the raw data 
+# Full dataset
+dataset_full <- read.csv(paste0(wd, "/Data/dataset_replication_full_FINAL.csv"), na.strings=c("",".","NA"))
+x.cate <- read.csv(paste0(wd, "/Data/CATE_dataset.csv"))
 # Pre-intervention dataset
 dataset_pre_2020 <- subset(dataset_full, year<2020) 
 # Intervention date
@@ -113,7 +115,7 @@ PCV <- lapply(num_cov, FUN = function(x){
   data <- as.PanelMLCM(y = dataset_full[, "std_math_score"], 
                        timevar = dataset_full[, "year"], 
                        id = dataset_full[, "id"],
-                       x = dataset_full[, xvar]) ;
+                       x = dataset_full[, xvar], y.lag = 0) ;
   rfGrid <- expand.grid(mtry = round(c(ncol(data)/2, ncol(data)/3, ncol(data)/4))) ;
   plsGrid <- expand.grid(ncomp = seq(1, (ncol(data)-2), by = 1)) ;
   rf$tuneGrid <- rfGrid ;
@@ -143,7 +145,7 @@ xvar <- colnames(dataset_full)[(total_columns-19):total_columns]
 data <- as.PanelMLCM(y = dataset_full[, "std_math_score"], 
                      timevar = dataset_full[, "year"], 
                      id = dataset_full[, "id"],
-                     x = dataset_full[, xvar]) 
+                     x = dataset_full[, xvar], y.lag = 0) 
 
 ### 3.2. Causal effect estimation
 causal_effects <- MLCM(data = data, int_date = int_date, inf_type = "block", PCV = best,
@@ -185,7 +187,7 @@ int_date_2019 <- 2019
 data_placebo_2019 <- as.PanelMLCM(y = dataset_full_2019[, "std_math_score"], 
                                   timevar = dataset_full_2019[, "year"], 
                                   id = dataset_full_2019[, "id"],
-                                  x = dataset_full_2019[, xvar]) 
+                                  x = dataset_full_2019[, xvar], y.lag = 0) 
 
 effects_placebo_2019 <- MLCM(data = data_placebo_2019, int_date = int_date_2019, inf_type = "block", PCV = best,
                              nboot = 1, CATE = FALSE)
@@ -211,7 +213,7 @@ int_date_2018 <- 2018
 data_placebo_2018 <- as.PanelMLCM(y = dataset_full_2018[, "std_math_score"], 
                                   timevar = dataset_full_2018[, "year"], 
                                   id = dataset_full_2018[, "id"],
-                                  x = dataset_full_2018[, xvar]) 
+                                  x = dataset_full_2018[, xvar], y.lag = 0) 
 
 effects_placebo_2018 <- MLCM(data = data_placebo_2018, int_date = int_date_2018, inf_type = "block", PCV = best,
                              nboot = 1, CATE = FALSE)
@@ -228,3 +230,4 @@ names(ind_eff_placebo_2018) <- c("ID", "IND_EFF")
 write.csv(ind_eff_placebo_2018, file = paste0(wd, "/Output/individual_effects_placebo_2018.csv"))
 write.csv(ate_eff_placebo_2018, file = paste0(wd, "/Output/ate_placebo_2018.csv"))
 ```
+
