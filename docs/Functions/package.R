@@ -280,10 +280,10 @@ PanelCrossValidation <- function(data, int_date, pcv_block = 1, metric = "RMSE",
 
     invisible(capture.output(
 
-    m_list <- lapply(ML_methods, FUN = function(x)(do.call(train, c(list(Y ~ .,
+    m_list <- lapply(ML_methods, FUN = function(x){set.seed(1); do.call(train, c(list(Y ~ .,
                                                                          data = data[, !(names(data) %in% c("ID", "Time"))],
                                                                          metric = metric,
-                                                                         trControl = ctrl), x))))
+                                                                         trControl = ctrl), x))})
     ))
 
   }
@@ -375,13 +375,13 @@ boot_ate <- function(data, int_date, bestt, type, nboot, alpha, metric, y.lag, a
     #  unlist(sapply(ind1, function(y)(setdiff(which(data[, "ID"] %in% y), ii0)), simplify = FALSE))
 
     #}, SIMPLIFY = FALSE)
-
+    
     # Step 3. Estimating individual effects and ATE for each bootstrap iteration
     #ate_boot <- mapply(x = ii0, y = ii1, function(x, y){ate_est(data = data[c(x, y),], int_date = int_date, best = bestt, metric = metric, ran.err = TRUE, y.lag = y.lag)$ate})
     # ate_boot <- sapply(ii0, function(i){ate_est(data = data[c(i, post),], int_date = int_date, best = bestt, metric = metric, ran.err = TRUE, y.lag = y.lag)$ate})
     eff_boot <- lapply(ii0, function(i){ate_est(data = data[c(i, post),], int_date = int_date, best = bestt, metric = metric, ran.err = TRUE, y.lag = y.lag)})
     ate_boot <- sapply(eff_boot, function(x)(x$ate))
-    ind_boot <- sapply(eff_boot, function(x)(x$ind_effects))
+    ind_boot <- sapply(eff_boot, function(x)(x$ind_effects[,-1]))
 
   }
 
@@ -390,15 +390,16 @@ boot_ate <- function(data, int_date, bestt, type, nboot, alpha, metric, y.lag, a
   rownames(ate_boot) <- unique(data[post, "Time"])
   conf.ate <- apply(ate_boot, 1, quantile, probs = c(alpha/2, 1 - alpha/2))
   var.ate <- apply(ate_boot, 1, var)
-
+  
   ### Confidence interval for the individual effects
   conf.individual <- array(apply(ind_boot, 1, quantile, probs = c(0.025, 0.975)),
                            dim = c(2,length(unique(data$ID)), length(unique(data[post, "Time"]))))
   dimnames(conf.individual)[[3]] <- unique(data[post, "Time"])
-
+  dimnames(conf.individual)[[1]] <- c("Lower", "Upper")
+  
   ### Adjusting for bias and/or skewness (if 'type' is "bc classic", "bc block")
   if(type %in% c("bc classic", "bc block")){
-
+    
     # Bias correction for ATE
     z0 <- mapply(x = apply(ate_boot, 1, as.list), y = ate, FUN = function(x,y)(qnorm(sum(x < y)/nboot)), SIMPLIFY = TRUE)
     lower <- pnorm(2*z0 + qnorm(alpha/2))
@@ -408,13 +409,14 @@ boot_ate <- function(data, int_date, bestt, type, nboot, alpha, metric, y.lag, a
     # conf.ate <- quantile(mean_ate_boot, probs = c(lower, upper)) # old
 
     # Bias correction for the individual effects
-    z0 <- mapply(x = apply(ind_boot, 1, as.list), y = ind.eff, FUN = function(x,y)(qnorm(sum(x < y)/nboot)), SIMPLIFY = TRUE)
+    z0 <- mapply(x = apply(ind_boot, 1, as.list), y = ind.eff[,-1], FUN = function(x,y)(qnorm(sum(x < y)/nboot)), SIMPLIFY = TRUE)
     lower <- pnorm(2*z0 + qnorm(alpha/2))
     upper <- pnorm(2*z0 + qnorm(1 - alpha/2))
     conf.individual <- mapply(x = as.list(lower), y = as.list(upper), z = apply(ind_boot, 1, as.list),
                        FUN = function(x,y,z){quantile(unlist(z), probs = c(x,y))}, SIMPLIFY = TRUE)
-    conf.individual <- array(conf.individual, c(2, unique(data$ID), unique(data[post, "Time"])))
-
+    conf.individual <- array(conf.individual, c(2, length(unique(data$ID)), length(unique(data[post, "Time"]))))
+    dimnames(conf.individual)[[3]] <- unique(data[post, "Time"])
+    dimnames(conf.individual)[[1]] <- c("Lower", "Upper")
   }
 
   if(type == "bca"){ # RICONTROLLARE
@@ -462,7 +464,7 @@ boot_cate <- function(effect, cate, nboot, alpha){
   if(class(cate) != "rpart") stop ("cate must be an 'rpart' object")
   if(nboot < 1 | all(!class(nboot) %in% c("numeric", "integer")) | nboot%%1 != 0) stop("nboot must be an integer greater than 1")
   if(alpha < 0 | alpha > 1) stop("Invalid confidence interval level, alpha must be positive and less than 1")
-
+  
   ### Bootstrapping
   terminal.nodes <- cate$where
   x <- unique(terminal.nodes)
@@ -527,7 +529,7 @@ ate_est <- function(data, int_date, best, metric, ran.err, y.lag){
     ### Step 3. Counterfactual prediction, if the option 'ran.err' is active, a random error is added
     ###         to the prediction (recommended only during bootstrap to get reliable estimates of ATEs variance)
     if(ran.err){
-
+      
       eps <- data[pre, "Y"] - predict.train(fit)
       error <- rnorm(n = nrow(data[post,]), mean = mean(eps), sd = sd(eps))
       pred <- predict.train(fit, newdata = data[post, ]) + error
@@ -562,9 +564,10 @@ ate_est <- function(data, int_date, best, metric, ran.err, y.lag){
       }
     }
   }
-
+   
   ### Step 3. Returning the matrix of individual effects and the ATE
   ind_effects <- cbind(ID = unique(data$ID), ind_effects)
+  ind_effects <- ind_effects[order(ind_effects[, "ID"], decreasing = F), ]
   return(list(ind_effects = ind_effects, ate = colMeans(as.matrix(ind_effects[, -1]))))
 }
 
@@ -604,13 +607,14 @@ cate_est <- function(data, int_date, ind_effects, x.cate, nboot, alpha){
 
     data_cate <- data.frame(Time = postimes, ID = data[post, "ID"], effect = c(t(ind_effects[,-1])))
     data_cate <- merge(data_cate, x.cate, by = c("ID", "Time"))
+    data_cate <- data_cate[order(data_cate[, "ID"], decreasing = FALSE),]
     data_cate$ID <- NULL
 
   }
 
   ### Step 3. CATE estimation & inference
   cate <- lapply(unique(postimes), FUN = function(x){
-    rpart(effect ~ ., method="anova", data = data_cate[data_cate$Time == x, -1], cp = 0, minbucket = 0.05*length(unique(data$ID)))})
+    rpart(effect ~ ., method="anova", data = data_cate[data_cate$Time == x, -1], cp = 0, minbucket = 0.1*length(unique(data$ID)))})
   mat <- data.frame(postimes, c(t(ind_effects[,-1])))
   cate.inf <- mapply(x = cate, y = unique(postimes), FUN = function(x,y)(
     boot_cate(effect = mat[mat$postimes == y, -1], cate = x, nboot = nboot, alpha = alpha)), SIMPLIFY = FALSE)
