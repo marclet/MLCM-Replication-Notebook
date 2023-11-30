@@ -366,23 +366,24 @@ Forecasting”</h2>
 reported in Section 4 of the paper “The Machine Learning Control Method
 for Counterfactual Forecasting” (Cerqua et al., 2023) using the data
 that can be downloaded <a href="https://github.com/marclet/MLCM-Replication-Notebook/tree/main/data">here</a>.</p>
-<p>Note that, for the sake of computational speed, the main dataset
-(“dataset_replication_full_FINAL.csv”) only includes the restricted set
-of relevant variables selected by the preliminary random forest (see
-Cerqua et al., 2023 for details). In the same folder, you can find the
-file “metadata_replication.xlsx”, which contains detailed metadata
-regarding the variables included in both datasets.</p>
-<p>The notebook should help to show the underlying code for researchers
-interested in replicating our analysis or in adapting it to new datasets
-for their own applications.</p>
-<p>The explanations in this notebook are kept short. Please refer to the
-paper for the full details regarding the application.</p>
-<p>Be aware that running the analyses in this notebook with the original
-number of bootstrap replications (standard errors in the paper are
-computed based on 1,000 replications) will take a long time. For this
-reason, the code below has the option “nboot” set to 50 in all
-instances. Change it to “nboot = 1000” if you also want to get the same
-standard errors as in the paper.</p>
+<p>To enhance computational speed, the main dataset
+(“dataset_replication_full_FINAL.csv”) includes only the restricted set
+of relevant variables selected by the preliminary random forest (as
+detailed in Cerqua et al., 2023). Additionally, in the same folder,
+you’ll find the file “metadata_replication.xlsx”, which provides
+detailed metadata regarding the variables included in both datasets.</p>
+<p>The notebook serves as a guide for researchers interested in
+replicating our analysis or adapting it to new datasets for their own
+applications. While the explanations in this notebook are concise, we
+recommend referring to the full paper for comprehensive details on the
+application.</p>
+<p>Running the analyses in this notebook with the original number of
+bootstrap replications (where standard errors were computed based on
+1,000 replications) will be time-consuming. Therefore, the code below
+sets the option “nboot” to 100 in all instances and, as a result, the
+standard errors are different from those reported in the paper. If you
+wish to obtain the same standard errors as in the paper, change it to
+“nboot = 1000”.”</p>
 </div>
 <div id="data-preparation" class="section level2">
 <h2>Data preparation</h2>
@@ -418,17 +419,22 @@ int_date &lt;- 2020
 #          the number of times is 4). The dataset is organized in a a long manner
 #          i.e., it has 579 X 4 = 2316 rows, one column for ID variable (&#39;id&#39;), 
 #          one column for the time variable (&#39;year&#39;) and one column for the dependent 
-#          variable (&#39;std_math_score&#39;). The dataset also contains 154 potential 
-#          explanatory variables. </code></pre>
+#          variable (&#39;std_math_score&#39;).</code></pre>
 <p><br> <br></p>
 </div>
 <div id="panel-cross-validation" class="section level1">
 <h1>Panel cross-validation</h1>
-<p>This step runs the horse-race competition among the four selected ML
-algorithms (LASSO, Partial Least Squares, boosting, and random forest)
-and tunes their hyperparameters on their pre-treatment data. This is the
-chunk code we used to produce Panel A, Table I (performances in terms of
-MSE) and Figure 3 (distribution of forecasting errors) in the paper.</p>
+<p>This step involves a horse-race competition among the four selected
+machine learning (ML) algorithms: LASSO, Partial Least Squares,
+boosting, and random forest. We fine-tune their hyperparameters using
+pre-treatment data. This chunk of code produces the results needed to
+replicate Panel A, Table I (evaluating performance in terms of Mean
+Squared Error (MSE), and Figure 3 (which illustrates the distribution of
+forecasting errors) in our paper. It is important to note that to obtain
+MSE results, manual computation is required based on the Root Mean
+Squared Error (RMSE) estimates reported below. The ‘caret’ package,
+which is embedded in MachineControl, does not directly provide MSE
+results.</p>
 <pre class="r"><code># Set seed
 set.seed(1)
 
@@ -457,6 +463,7 @@ pls &lt;- list(method = &quot;pls&quot;)
 ###      performing algorithm based on the RMSE criterion. Note that we include here the whole dataset
 ###      because the &#39;PanelCrossValidation&#39; function subsets the data internally via the argument 
 ###      &#39;int_date&#39;. See lines 202 and beyond of &#39;package.R&#39;.
+
 PCV &lt;- lapply(num_cov, FUN = function(x){
   
   total_columns &lt;- ncol(dataset_full)
@@ -666,13 +673,13 @@ best</code></pre>
 ## The final value used for the model was mtry = 6.</code></pre>
 <div id="estimation-of-causal-effects" class="section level2">
 <h2>Estimation of causal effects</h2>
-<p>Now that we know the best-performing model, we can proceed with the
-estimation of individual, average, and conditional average treatment
-effects and export them to produce Figure 4 (map of individual causal
-effects) and Figure 5 (data-driven CATEs) reported in the paper.</p>
+<p>Now that we know the best-performing model, we can proceed with
+estimating individual, average, and conditional average treatment
+effects. We then export these results to produce Figure 4 (the map of
+individual causal effects) and Figure 5 (data-driven or CATEs) as
+reported in the paper.</p>
 <pre class="r"><code>### 3.1. Definition of the final dataset, based on the selected variable importance threshold
 # Set seed
-set.seed(1)
 
 total_columns &lt;- ncol(dataset_full)
 xvar &lt;- colnames(dataset_full)[(total_columns-19):total_columns]
@@ -683,26 +690,26 @@ data &lt;- as.PanelMLCM(y = dataset_full[, &quot;std_math_score&quot;],
 
 ### 3.2. Causal effect estimation
 causal_effects &lt;- MLCM(data = data, int_date = int_date, inf_type = &quot;block&quot;, PCV = best,
-                       nboot = 50, CATE = TRUE, x.cate = x.cate)
+                       nboot = 100, CATE = TRUE, x.cate = x.cate)
 
-# ATE
+# ATE 2020
 ate_eff &lt;- c(causal_effects$ate, causal_effects$conf.ate)
 names(ate_eff) &lt;- c(&quot;ATE&quot;, &quot;Lower_bound&quot;, &quot;Upper_bound&quot;)
 ate_eff</code></pre>
 <pre><code>##         ATE Lower_bound Upper_bound 
-##  -0.7607986  -0.7968865  -0.6983856</code></pre>
+##  -0.7607986  -0.7947666  -0.6824086</code></pre>
 <pre class="r"><code># Individual effects
 ind_eff &lt;- data.frame(causal_effects$ind.effects)
 names(ind_eff) &lt;- c(&quot;ID&quot;, &quot;IND_EFF&quot;)
-# CATE
+# CATEs
 cate_eff &lt;- causal_effects$cate.inf
 cate_eff</code></pre>
 <pre><code>## $`2020`
-##                        Node_9       Node_8      Node_5     Node_4       Node_6
-## cate             -0.556417759 -0.756163272 -0.86036529 -1.2222561 -0.658588159
-## var.cate          0.001586524  0.003085996  0.00662519  0.0189210  0.008411511
-## cate.lower.2.5%  -0.638919215 -0.840246899 -0.99410921 -1.4856746 -0.835262088
-## cate.upper.97.5% -0.492982057 -0.661730193 -0.74843487 -0.9727227 -0.460157166</code></pre>
+##                        Node_9       Node_8       Node_5      Node_4      Node_6
+## cate             -0.556417759 -0.756163272 -0.860365286 -1.22225606 -0.65858816
+## var.cate          0.001602889  0.003484612  0.008754586  0.01885738  0.01085663
+## cate.lower.2.5%  -0.624629899 -0.860572949 -1.042186062 -1.50574472 -0.82633711
+## cate.upper.97.5% -0.483742368 -0.656333238 -0.669399354 -0.96212361 -0.47471424</code></pre>
 <pre class="r"><code>causal_effects$cate</code></pre>
 <pre><code>## [[1]]
 ## n= 579 
@@ -728,11 +735,10 @@ write.csv(cate_eff, file = paste0(wd, &quot;/Output/cate.csv&quot;))</code></pre
 <div id="placebo-test" class="section level2">
 <h2>Placebo test</h2>
 <p>Finally, we repeat the analysis on the pre-pandemic years (2018 and
-2019) to compute placebo treatment effects and export them to produce
-Panel B of Table III, Figure 2, and Figure 1 reported in Online
-Appendix, Part 3.</p>
+2019) to compute placebo treatment effects. We then export these effects
+to generate Panel B of Table III, Figure 2 in the main text, and Figure
+1 reported in Online Appendix.</p>
 <pre class="r"><code># Set seed
-set.seed(1)
 
 # 2019 #
 ### 3.1. Definition of the final dataset, based on the selected variable importance threshold
@@ -744,22 +750,20 @@ data_placebo_2019 &lt;- as.PanelMLCM(y = dataset_full_2019[, &quot;std_math_scor
                                   x = dataset_full_2019[, xvar], y.lag = 0) 
 
 effects_placebo_2019 &lt;- MLCM(data = data_placebo_2019, int_date = int_date_2019, inf_type = &quot;block&quot;, PCV = best,
-                             nboot = 50, CATE = FALSE)
+                             nboot = 100, CATE = FALSE)
 
 # ATE (Placebo 2019)
 ate_eff_placebo_2019 &lt;- c(effects_placebo_2019$ate, effects_placebo_2019$conf.ate)
 names(ate_eff_placebo_2019) &lt;- c(&quot;ATE&quot;, &quot;Lower_bound&quot;, &quot;Upper_bound&quot;)
 ate_eff_placebo_2019</code></pre>
 <pre><code>##         ATE Lower_bound Upper_bound 
-##  0.02538013 -0.03589437  0.08119430</code></pre>
+##  0.02538013 -0.02566334  0.07836224</code></pre>
 <pre class="r"><code># Individual effects (Placebo 2019)
 ind_eff_placebo_2019 &lt;- data.frame(effects_placebo_2019$ind.effects)
 names(ind_eff_placebo_2019) &lt;- c(&quot;ID&quot;, &quot;IND_EFF&quot;)
 
 write.csv(ind_eff_placebo_2019, file = paste0(wd, &quot;/Output/individual_effects_placebo_2019.csv&quot;))
 write.csv(ate_eff_placebo_2019, file = paste0(wd, &quot;/Output/ate_placebo_2019.csv&quot;))
-
-
 
 
 # 2018 #
@@ -772,14 +776,14 @@ data_placebo_2018 &lt;- as.PanelMLCM(y = dataset_full_2018[, &quot;std_math_scor
                                   x = dataset_full_2018[, xvar], y.lag = 0) 
 
 effects_placebo_2018 &lt;- MLCM(data = data_placebo_2018, int_date = int_date_2018, inf_type = &quot;block&quot;, PCV = best,
-                             nboot = 50, CATE = FALSE)
+                             nboot = 100, CATE = FALSE)
 
 # ATE (Placebo 2018)
 ate_eff_placebo_2018 &lt;- c(effects_placebo_2018$ate, effects_placebo_2018$conf.ate)
 names(ate_eff_placebo_2018) &lt;- c(&quot;ATE&quot;, &quot;Lower_bound&quot;, &quot;Upper_bound&quot;)
 ate_eff_placebo_2018</code></pre>
 <pre><code>##         ATE Lower_bound Upper_bound 
-##  0.05538092 -0.11394319  0.28027316</code></pre>
+##  0.05538092 -0.10438444  0.29053423</code></pre>
 <pre class="r"><code># Individual effects (Placebo 2018)
 ind_eff_placebo_2018 &lt;- data.frame(effects_placebo_2018$ind.effects)
 names(ind_eff_placebo_2018) &lt;- c(&quot;ID&quot;, &quot;IND_EFF&quot;)
@@ -787,6 +791,11 @@ names(ind_eff_placebo_2018) &lt;- c(&quot;ID&quot;, &quot;IND_EFF&quot;)
 # export the results
 write.csv(ind_eff_placebo_2018, file = paste0(wd, &quot;/Output/individual_effects_placebo_2018.csv&quot;))
 write.csv(ate_eff_placebo_2018, file = paste0(wd, &quot;/Output/ate_placebo_2018.csv&quot;))</code></pre>
+</div>
+<div id="reference" class="section level2">
+<h2>Reference</h2>
+<p>Cerqua, A., % Letta, M., % Menchetti, F. 2023. The Machine Learning
+Control Method for Counterfactual Forecasting.</p>
 </div>
 </div>
 
