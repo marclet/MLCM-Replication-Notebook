@@ -352,11 +352,6 @@ display: none;
 </div>
 
 
-<div id="head" class="section level2">
-<h2>&lt;&lt;&lt;&lt;&lt;&lt;&lt; HEAD</h2>
-<p>title: “Replication Notebook” output: html_document: df_print: paged
-pdf_document: default html_notebook: default —</p>
-</div>
 <div id="the-machine-learning-control-method-for-counterfactual-forecasting" class="section level1">
 <h1>“The Machine Learning Control Method for Counterfactual
 Forecasting”</h1>
@@ -368,25 +363,30 @@ Forecasting”</h1>
 <p>This Notebook replicates the results of the empirical application
 reported in Section 4 of the paper using the publicly available data
 that can be downloaded <a href="https://github.com/marclet/MLCM-Replication-Notebook/tree/main/data">here</a>.
-The notebook should help to show the underlying code for researchers
+Note that, for the sake of computational speed, the main dataset
+(“dataset_replication_full_FINAL.csv”) only includes the restricted set
+of relevant variables selected by the preliminary random forest (see
+Cerqua et al., 2023 for details). In the same folder, you can find the
+file “metadata_replication.xlsx”, which contains detailed metadata
+regarding the variables included in both datasets.</p>
+<p>The notebook should help to show the underlying code for researchers
 interested in replicating our analysis or in adapting it to new datasets
 for their own applications.</p>
 <p>The explanations in this notebook are kept short. Please refer to the
 paper for the full details regarding the application.</p>
 <p>Click on the “Code” button on the top right of this notebook to “Hide
-All Code” and see only the results or “Download Rmd” to extract the
-underlying code.</p>
+All Code” or “Download Rmd” to extract the underlying code.</p>
 <p>Be aware that running the analyses in this notebook with the original
 number of bootstrap replications (standard errors in the paper are
 computed based on 1,000 replications) will take a long time. For this
-reason, the code below has the options “nboot” set to 1. Change it to
-“nboot = 1000” if you also want to get the same standard error as in the
-paper.</p>
+reason, the code below has the option “nboot” set to 50 in all
+instances. Change it to “nboot = 1000” if you also want to get the same
+standard errors as in the paper.</p>
 <p><br> <br></p>
 </div>
 <div id="data-preparation" class="section level2">
 <h2>Data preparation</h2>
-<p>Download the main data from [here] (<a href="https://github.com/marclet/MLCM-Replication-Notebook/tree/main/data" class="uri">https://github.com/marclet/MLCM-Replication-Notebook/tree/main/data</a>).</p>
+<p>Download the main data from <a href="https://github.com/marclet/MLCM-Replication-Notebook/tree/main/data">here</a>.</p>
 <pre class="r"><code>rm(list=ls())
 # Load required libraries
 library(CAST)</code></pre>

@@ -1,12 +1,3 @@
-<<<<<<< HEAD
----
-title: "Replication Notebook"
-output:
-  html_document:
-    df_print: paged
-  pdf_document: default
-  html_notebook: default
----
 
 # "The Machine Learning Control Method for Counterfactual Forecasting"
 
@@ -14,22 +5,24 @@ output:
 
 ## The Impact of the COVID-19 Crisis on Education in Italy
 
-This Notebook replicates the results of the empirical application reported in Section 4 of the paper using the publicly available data that can be downloaded [here](https://github.com/marclet/MLCM-Replication-Notebook/tree/main/data). The notebook should help to show the underlying code for researchers interested in replicating our analysis or in adapting it to new datasets for their own applications.
+This Notebook replicates the results of the empirical application reported in Section 4 of the paper using the publicly available data that can be downloaded [here](https://github.com/marclet/MLCM-Replication-Notebook/tree/main/data). Note that, for the sake of computational speed, the main dataset ("dataset_replication_full_FINAL.csv") only includes the restricted set of relevant variables selected by the preliminary random forest (see Cerqua et al., 2023 for details). In the same folder, you can find the file "metadata_replication.xlsx", which contains detailed metadata regarding the variables included in both datasets. 
+
+The notebook should help to show the underlying code for researchers interested in replicating our analysis or in adapting it to new datasets for their own applications.
 
 The explanations in this notebook are kept short. Please refer to the paper for the full details regarding the application.
 
-Click on the "Code" button on the top right of this notebook to "Hide All Code" and see only the results or "Download Rmd" to extract the underlying code.
+Click on the "Code" button on the top right of this notebook to "Hide All Code" or "Download Rmd" to extract the underlying code.
 
-Be aware that running the analyses in this notebook with the original number of bootstrap replications (standard errors in the paper are computed based on 1,000 replications) will take a long time. For this reason, the code below has the options "nboot" set to 1. Change it to "nboot = 1000" if you also want to get the same standard error as in the paper.
+Be aware that running the analyses in this notebook with the original number of bootstrap replications (standard errors in the paper are computed based on 1,000 replications) will take a long time. For this reason, the code below has the option "nboot" set to 50 in all instances. Change it to "nboot = 1000" if you also want to get the same standard errors as in the paper.
 
 <br>
 <br>
 
 ## Data preparation
 
-Download the main data from [here] (https://github.com/marclet/MLCM-Replication-Notebook/tree/main/data).
+Download the main data from [here](https://github.com/marclet/MLCM-Replication-Notebook/tree/main/data).
 
-```{r}
+```{r, results = 'hide'}
 rm(list=ls())
 # Load required libraries
 library(CAST)
