@@ -9,17 +9,19 @@ output:
 
 ## Augusto Cerqua, Marco Letta, Fiammetta Menchetti
 
+<br>
 
-## The impact of the COVID-19 crisis on education in Italy
+## Application: the impact of the COVID-19 crisis on education in Italy
 
 This Notebook replicates the key results of the empirical application reported in Section 4 of the paper "The Machine Learning Control Method for Counterfactual Forecasting" (Cerqua et al., 2023) using the data that can be downloaded [here](https://github.com/marclet/MLCM-Replication-Notebook/tree/main/data). 
 
-To enhance computational speed, the main dataset (“dataset_replication_full_FINAL.csv”) includes only the restricted set of relevant variables selected by the preliminary random forest (as detailed in Cerqua et al., 2023). Additionally, in the same folder, you’ll find the file “metadata_replication.xlsx”, which provides detailed metadata regarding the variables included in both datasets.
+To enhance computational speed, the main dataset (“dataset_replication_full_FINAL.csv”) includes only the restricted set of relevant variables selected by the preliminary random forest (as detailed in Cerqua et al., 2023). Additionally, in the same folder, you’ll find the file “metadata_replication.xlsx”, which provides detailed information regarding the variables included in both datasets.
 
 The notebook serves as a guide for researchers interested in replicating our analysis or adapting it to new datasets for their own applications. While the explanations in this notebook are concise, we recommend referring to the full paper for comprehensive details on the application.
 
-Running the analyses in this notebook with the original number of bootstrap replications (where standard errors were computed based on 1,000 replications) will be time-consuming. Therefore, the code below sets the option “nboot” to 100 in all instances and, as a result, the standard errors are different from those reported in the paper. If you wish to obtain the same standard errors as in the paper, change it to “nboot = 1000”."
+Running the analyses in this notebook with the original number of bootstrap replications (where standard errors were computed based on 1,000 replications) will be time-consuming. Therefore, the code below sets the option “nboot” to 100 in all instances and, as a result, the standard errors are slightly different from those reported in the paper. If you wish to obtain the same standard errors as in the paper, change it to “nboot = 1000”."
 
+<br>
 
 ## Data preparation
 
@@ -38,7 +40,7 @@ library(utils)
 library(randomForest)
 library(rpart)
 ```
-<br>
+
 <br>
 
 We start by loading and preparing the data:
@@ -66,7 +68,6 @@ int_date <- 2020
 
 ```
 
-<br>
 <br>
 
 # Panel cross-validation
@@ -126,6 +127,8 @@ best <- PCV[[ind]]$best
 best
 ```
 
+<br>
+
 ## Estimation of causal effects
 
 Now that we know the best-performing model, we can proceed with estimating individual, average, and conditional average treatment effects. We then export these results to produce Figure 4 (the map of individual causal effects) and Figure 5 (data-driven or CATEs) as reported in the paper.
@@ -163,7 +166,6 @@ write.csv(ate_eff, file = paste0(wd, "/Output/ate.csv"))
 write.csv(cate_eff, file = paste0(wd, "/Output/cate.csv"))
 ```
 
-<br>
 <br>
 
 ## Placebo test
@@ -221,6 +223,8 @@ names(ind_eff_placebo_2018) <- c("ID", "IND_EFF")
 write.csv(ind_eff_placebo_2018, file = paste0(wd, "/Output/individual_effects_placebo_2018.csv"))
 write.csv(ate_eff_placebo_2018, file = paste0(wd, "/Output/ate_placebo_2018.csv"))
 ```
+
+<br>
 
 ## Reference
 

@@ -359,9 +359,11 @@ Forecasting”</h2>
 </div>
 <div id="augusto-cerqua-marco-letta-fiammetta-menchetti" class="section level2">
 <h2>Augusto Cerqua, Marco Letta, Fiammetta Menchetti</h2>
+<p><br></p>
 </div>
-<div id="the-impact-of-the-covid-19-crisis-on-education-in-italy" class="section level2">
-<h2>The impact of the COVID-19 crisis on education in Italy</h2>
+<div id="application-the-impact-of-the-covid-19-crisis-on-education-in-italy" class="section level2">
+<h2>Application: the impact of the COVID-19 crisis on education in
+Italy</h2>
 <p>This Notebook replicates the key results of the empirical application
 reported in Section 4 of the paper “The Machine Learning Control Method
 for Counterfactual Forecasting” (Cerqua et al., 2023) using the data
@@ -371,7 +373,8 @@ that can be downloaded <a href="https://github.com/marclet/MLCM-Replication-Note
 of relevant variables selected by the preliminary random forest (as
 detailed in Cerqua et al., 2023). Additionally, in the same folder,
 you’ll find the file “metadata_replication.xlsx”, which provides
-detailed metadata regarding the variables included in both datasets.</p>
+detailed information regarding the variables included in both
+datasets.</p>
 <p>The notebook serves as a guide for researchers interested in
 replicating our analysis or adapting it to new datasets for their own
 applications. While the explanations in this notebook are concise, we
@@ -381,9 +384,10 @@ application.</p>
 bootstrap replications (where standard errors were computed based on
 1,000 replications) will be time-consuming. Therefore, the code below
 sets the option “nboot” to 100 in all instances and, as a result, the
-standard errors are different from those reported in the paper. If you
-wish to obtain the same standard errors as in the paper, change it to
-“nboot = 1000”.”</p>
+standard errors are slightly different from those reported in the paper.
+If you wish to obtain the same standard errors as in the paper, change
+it to “nboot = 1000”.”</p>
+<p><br></p>
 </div>
 <div id="data-preparation" class="section level2">
 <h2>Data preparation</h2>
@@ -399,7 +403,7 @@ library(stats)
 library(utils)
 library(randomForest)
 library(rpart)</code></pre>
-<p><br> <br></p>
+<p><br></p>
 <p>We start by loading and preparing the data:</p>
 <pre class="r"><code># set the path where the data are stored for replication; custom functions
 wd &lt;- &quot;C:/Users/39380/Documents/GitHub/MLCM-Replication-Notebook/docs&quot;
@@ -420,7 +424,7 @@ int_date &lt;- 2020
 #          i.e., it has 579 X 4 = 2316 rows, one column for ID variable (&#39;id&#39;), 
 #          one column for the time variable (&#39;year&#39;) and one column for the dependent 
 #          variable (&#39;std_math_score&#39;).</code></pre>
-<p><br> <br></p>
+<p><br></p>
 </div>
 <div id="panel-cross-validation" class="section level1">
 <h1>Panel cross-validation</h1>
@@ -671,6 +675,7 @@ best</code></pre>
 ## 
 ## RMSE was used to select the optimal model using the smallest value.
 ## The final value used for the model was mtry = 6.</code></pre>
+<p><br></p>
 <div id="estimation-of-causal-effects" class="section level2">
 <h2>Estimation of causal effects</h2>
 <p>Now that we know the best-performing model, we can proceed with
@@ -730,7 +735,7 @@ cate_eff</code></pre>
 write.csv(ind_eff, file = paste0(wd, &quot;/Output/individual_effects.csv&quot;))
 write.csv(ate_eff, file = paste0(wd, &quot;/Output/ate.csv&quot;))
 write.csv(cate_eff, file = paste0(wd, &quot;/Output/cate.csv&quot;))</code></pre>
-<p><br> <br></p>
+<p><br></p>
 </div>
 <div id="placebo-test" class="section level2">
 <h2>Placebo test</h2>
@@ -791,6 +796,7 @@ names(ind_eff_placebo_2018) &lt;- c(&quot;ID&quot;, &quot;IND_EFF&quot;)
 # export the results
 write.csv(ind_eff_placebo_2018, file = paste0(wd, &quot;/Output/individual_effects_placebo_2018.csv&quot;))
 write.csv(ate_eff_placebo_2018, file = paste0(wd, &quot;/Output/ate_placebo_2018.csv&quot;))</code></pre>
+<p><br></p>
 </div>
 <div id="reference" class="section level2">
 <h2>Reference</h2>
