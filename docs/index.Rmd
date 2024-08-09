@@ -5,7 +5,7 @@ output:
   html_notebook: default
 ---
 
-## "The Machine Learning Control Method for Counterfactual Forecasting"
+## "Causal Inference and Policy Evaluation Without a Control Group"
 
 ## Augusto Cerqua, Marco Letta, Fiammetta Menchetti
 
